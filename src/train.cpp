@@ -16,7 +16,7 @@ Train::Train() {
 }
 
 void Train::addCage(bool light) {
-  Cage* temp = creat(light);
+  Cage* temp = create(light);
   if (!first) {
     current = first = tail = temp;
   } else {
