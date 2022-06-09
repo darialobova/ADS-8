@@ -24,24 +24,24 @@ void Train::addCage(bool light) {
 int Train::getLength() {
   Cage* current = first;
   first->light = true;
-  int lenght = 0;
+  int len = 0;
   countOp = 0;
   while (true) {
     countOp++;
-    lenght++;
-    int tr_lenght;
+    len++;
+    int tr_len;
     current = current->next;
     if (current->light) {
       current->light = false;
-      tr_lenght = lenght;
-      for (tr_lenght; tr_lenght > 0; tr_lenght--) {
+      tr_len = len;
+      for (tr_len; tr_len > 0; tr_len--) {
         current = current->prev;
         countOp++;
       }
       if (!current->light) {
-        return lenght;
+        return len;
       }
-      lenght = tr_lenght;
+      len = tr_len;
     }
   }
 }
