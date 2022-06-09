@@ -1,65 +1,57 @@
 // Copyright 2021 NNTU-CS
 #include "train.h"
 
-Train::Cage* Train::create(bool light) {
-  Cage* item = new Cage;
-  item->light = light;
-  item->next = nullptr;
-  item->prev = nullptr;
-  return item;
+Train::Train() {
+  first = current = nullptr;
+  countOp = length = Count = 0;
 }
 
-Train::Train() {
-  first = tail = nullptr;
-  countOp = length = Count = 0;
+Train::Cage *Train::create(bool light) {
+  Cage* item = new Cage;
+  item->light = light;
+  item->next = item->prev = nullptr;
+  return item;
 }
 
 void Train::addCage(bool light) {
   if (!(first)) {
     first = create(light);
-    tail = first;
+    current = first;
   } else {
-    tail->next = create(light);
-    tail->next->prev = tail;
-    tail = tail->next;
-  if (!tail->next) {
-      tail->next = first;
-  } else {
-      first->prev = tail;
+    current->next = create(light);
+    current->next->prev = current;
+    current = current->next;
+    if (!current->next) {
+      current->next = first;
+    } else {
+      first->prev = current;
+    }
   }
 }
 
 int Train::getLength() {
   first->light = true;
-  Cage* temp = first;
+  current = first;
+  int temp;
   while (true) {
-      length++;
-      for (int i = 0; i < length; i++) {
-          temp = temp->next;
-          countOp++;
+    ++countOp, ++Count;
+    current = current->next;
+    if (current->light) {
+      temp = Count;
+      current->light = false;
+      if ((current->prev) != nullptr) {
+        while (current->light == false) {
+          current = current->prev;
+          --Count, ++countOp;
+        }
       }
-      if (temp->light) {
-          temp->light = false;
-          for (int i = 0; i < length; i++) {
-              temp = temp->prev;
-              countOp++;
-          }
-      } else {
-          while (!temp->light) {
-              length++;
-              temp = temp->next;
-              countOp++;
-          }
-          temp->light = false;
-          for (int i = 0; i < length; i++) {
-              temp = temp->prev;
-              countOp++;
-          }
+      if (!current->light) {
+        length = temp;
+        break;
       }
-      if (!temp->light) {
-          break;
-      }
+    }
   }
+  countOp += length;
   return length;
 }
 
